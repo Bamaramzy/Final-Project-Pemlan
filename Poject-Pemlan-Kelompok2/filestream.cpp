@@ -1,55 +1,49 @@
-#include <iostream>
-#include <fstream>
-#include <string>
+// library.cpp
 
+#include "library.h"
 using namespace std;
 
-// Struktur untuk informasi buku
-struct Buku
-{
-    string judulBuku;
-    string penulis;
-    int tahunTerbit;
-};
+void Library::displayAllBooks() {
+    ifstream file("database_buku.txt");
+    string line;
 
-// Struktur untuk informasi peminjaman
-struct Peminjaman
-{
-    string namaPeminjam;
-    string judulBuku;
-    int id;
-    string tanggalPinjam;
-    string tanggalKembali;
-};
+    cout << "Judul_Buku\tPenulis\tTahun_Terbit\n";
+    cout << "--------------------------------\n";
 
-// Struktur basis data peminjaman buku
-struct DatabasePeminjaman
-{
-    Peminjaman dataPeminjaman[100]; // Asumsi maksimal 100 peminjaman
-    int jumlahPeminjaman;
-};
-
-// Fungsi untuk menyimpan informasi peminjaman ke dalam basis data
-void tambahPeminjaman(DatabasePeminjaman &database, const Peminjaman &peminjaman)
-{
-    if (database.jumlahPeminjaman < 100)
-    {
-        database.dataPeminjaman[database.jumlahPeminjaman] = peminjaman;
-        database.jumlahPeminjaman++;
-        cout << "Informasi peminjaman berhasil ditambahkan." << endl;
+    while (getline(file, line)) {
+        cout << line << endl;
     }
-    else
-    {
-        cerr << "Basis data penuh, tidak dapat menambahkan peminjaman baru." << endl;
-    }
+
+    file.close();
 }
 
-// Fungsi untuk menampilkan semua informasi peminjaman dari basis data
-void tampilkanSemuaPeminjaman(const DatabasePeminjaman &database)
-{
-    cout << "Daftar Peminjaman:" << endl;
-    for (int i = 0; i < database.jumlahPeminjaman; i++)
-    {
-        cout << "ID: " << database.dataPeminjaman[i].id
-             << ", Peminjam: " << database.dataPeminjaman[i].namaPeminjam
-             << ", Jud
+void Library::displayAllPeminjam() {
+    ifstream file("database_peminjam.txt");
+    string line;
+
+    cout << "Nama_Peminjam\tJudul_Buku\n";
+    cout << "--------------------------\n";
+
+    while (getline(file, line)) {
+        cout << line << endl;
+    }
+
+    file.close();
+}
+
+void Library::borrowBook() {
+    string borrower, bookTitle;
+
+    cout << "Masukkan Nama Peminjam: ";
+    cin.ignore();
+    getline(cin, borrower);
+
+    cout << "Masukkan Judul Buku yang ingin dipinjam: ";
+    getline(cin, bookTitle);
+
+    ofstream peminjamFile("database_peminjam.txt", ios::app);
+    peminjamFile << borrower << '\t' << bookTitle << '\n';
+    peminjamFile.close();
+
+    cout << "Buku '" << bookTitle << "' berhasil dipinjam oleh " << borrower << ".\n";
+}
