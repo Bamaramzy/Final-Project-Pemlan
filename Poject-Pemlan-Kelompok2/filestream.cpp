@@ -1,122 +1,130 @@
-// main.cpp
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <algorithm>
-
-using namespace std;
-
-struct Buku
-{
-    string judulBuku;
-    string penulis;
-    int tahunTerbit;
-    int jumlah;
-};
-
-struct Peminjam
-{
-    string namaPeminjam;
-    string judulBuku;
-};
-
-class Library
-{
-public:
-    void displayAllBooks(Buku buku[], int size);
-    void displayAllPeminjam(Peminjam peminjam[], int size);
-    void sortByTitle(Buku buku[], int size);
-    void readBooksFromFile(Buku buku[], int &size, const string &filename);
-    void readPeminjamFromFile(Peminjam peminjam[], int &size, const string &filename);
-};
-
-void Library::displayAllBooks(Buku buku[], int size)
-{
-    for (int i = 0; i < size; ++i)
-    {
-        cout << buku[i].judulBuku << " " << buku[i].penulis << " " << buku[i].tahunTerbit << " " << buku[i].jumlah << endl;
+void readBuku(Buku buku[], int size){
+    ifstream infile;
+    infile.open("dbBuku.txt");
+    for (int i = 0; i < size ; i++){
+        infile >> buku[i].judulBuku >> buku[i].penulis >> buku[i].tahunTerbit >> buku[i].jumlah;
     }
-}
-
-void Library::displayAllPeminjam(Peminjam peminjam[], int size)
-{
-    for (int i = 0; i < size; ++i)
-    {
-        cout << peminjam[i].namaPeminjam << " " << peminjam[i].judulBuku << endl;
-    }
-}
-
-void Library::sortByTitle(Buku buku[], int size)
-{
-    sort(buku, buku + size, [](const Buku &a, const Buku &b)
-         { return a.judulBuku < b.judulBuku; });
-}
-
-void Library::readBooksFromFile(Buku buku[], int &size, const string &filename)
-{
-    ifstream infile(filename);
-    if (!infile)
-    {
-        cerr << "File " << filename << " tidak dapat dibuka.\n";
-        return;
-    }
-
-    size = 0;
-    while (infile >> buku[size].judulBuku >> buku[size].penulis >> buku[size].tahunTerbit >> buku[size].jumlah)
-    {
-        ++size;
-        if (size >= 20) // Memastikan tidak melebihi kapasitas array
-            break;
-    }
-
     infile.close();
 }
 
-void Library::readPeminjamFromFile(Peminjam peminjam[], int &size, const string &filename)
-{
-    ifstream infile(filename);
-    if (!infile)
-    {
-        cerr << "File " << filename << " tidak dapat dibuka.\n";
-        return;
+void readPeminjam(Peminjam peminjam[], int size){
+    ifstream infile;
+    infile.open("dbPeminjam.txt");
+    for (int i = 0; i < size ; i++){
+        infile >> peminjam[i].index >> peminjam[i].namaPeminjam >> peminjam[i].judulBuku;
     }
-
-    size = 0;
-    while (infile >> peminjam[size].namaPeminjam >> peminjam[size].judulBuku)
-    {
-        ++size;
-        if (size >= 20) // Memastikan tidak melebihi kapasitas array
-            break;
-    }
-
     infile.close();
 }
 
-int main()
-{
-    const int maxSize = 20;
-    Buku buku[maxSize];
-    Peminjam peminjam[maxSize];
-
-    int sizeBuku = 0;
-    int sizePeminjam = 0;
-
-    Library library;
-
-    // Membaca data buku dari file
-    library.readBooksFromFile(buku, sizeBuku, "dbBuku.txt");
-
-    // Membaca data peminjam dari file
-    library.readPeminjamFromFile(peminjam, sizePeminjam, "dbPeminjam.txt");
-
-    // Menampilkan data buku
-    cout << "Data Buku:\n";
-    library.displayAllBooks(buku, sizeBuku);
-
-    // Menampilkan data peminjam
-    cout << "\nData Peminjam:\n";
-    library.displayAllPeminjam(peminjam, sizePeminjam);
-
-    return 0;
+void displayBuku(Buku buku[], int size){
+    readBuku(buku, size);
+    for (int i = 0; i < size; ++i){
+        cout << i+1 << " " << buku[i].judulBuku << " " << buku[i].penulis << " " << buku[i].tahunTerbit << endl;
+    }
+    cout << endl;
 }
+
+void displayPeminjam(Peminjam peminjam[]){
+    int size = 0;
+    for (int i = 0; peminjam[i].index == i+1 ; i++){
+        size++;
+        if (peminjam[i].namaPeminjam == " "){
+            break;
+        }
+    }
+    for (int i = 0; i < size; ++i){
+        cout << i+1 << " " << peminjam[i].namaPeminjam << " " << peminjam[i].judulBuku << endl;
+    }
+    cout << endl;
+}
+
+
+
+void writeBuku(Buku buku[], int size, int pilihan, bool kembali){
+    readBuku(buku, size);
+    if(kembali){
+       buku[pilihan].jumlah = buku[pilihan].jumlah + 1;
+    }
+    else{
+        buku[pilihan].jumlah = buku[pilihan].jumlah - 1;
+    }
+    ofstream outfile;
+    outfile.open("dbBuku.txt");
+    for (int i = 0; i != size; i++){
+        outfile << buku[i].judulBuku << " " << buku[i].penulis << " " << buku[i].tahunTerbit <<" "<<buku[i].jumlah << endl;
+    }
+}
+
+
+void writePeminjam(Peminjam peminjam[], Buku buku[]){
+    ulang:
+    system("CLS");
+    int size = 0;
+    int nomorbuku = 0;
+    string nama;
+    for (int i = 0; peminjam[i].index == i+1 ; i++){
+        size++;
+    }
+
+    cout<<"Masukkan nama memakai underscore: ";
+    cin>>nama;
+    if (panjangnama(nama)){
+        peminjam[size].namaPeminjam = nama;
+    }
+    else {
+        goto ulang;
+    }
+
+    displayBuku(buku, 10);
+    cout<<"Masukkan nomor buku: ";
+    cin>>nomorbuku;
+
+    nomorbuku = nomorbuku - 1;
+    
+    if (buku[nomorbuku].jumlah == 0){
+        cout<<"Stok Buku Habis!\n";
+        return;
+    }
+    peminjam[size].index = size+1;
+    peminjam[size].judulBuku = buku[nomorbuku].judulBuku;
+
+    ofstream outfile;
+    outfile.open("dbPeminjam.txt");
+    for (int i = 0; i != size + 1; i++){
+        outfile << i+1 <<" "<< peminjam[i].namaPeminjam<<" "<< peminjam[i].judulBuku << endl;
+    }
+    outfile.close();
+
+    writeBuku(buku, 10, nomorbuku, false);
+}
+
+void kembali(Buku buku[], Peminjam peminjam[]){
+    int size = 0;
+    int nomor;
+    for (int i = 0; peminjam[i].index == i+1 ; i++){
+        size++;
+    }
+
+    displayPeminjam(peminjam);
+    cout<<"Masukkan Nomor Anda: ";
+    cin>>nomor;
+    nomor = nomor - 1;
+
+    for (int i = nomor; i != size; i++){
+        peminjam[i].judulBuku = peminjam[i+1].judulBuku;
+        peminjam[i].namaPeminjam = peminjam[i+1].namaPeminjam;
+    }
+    int nomorbuku = searchJudulPeminjam(peminjam, size, peminjam[nomor].judulBuku);
+    writeBuku(buku, 10, nomorbuku, true);
+
+    ofstream outfile;
+    outfile.open("dbPeminjam.txt");
+    for (int i = 0; i != size - 1; i++){
+        outfile << i+1 <<" "<< peminjam[i].namaPeminjam<<" "<< peminjam[i].judulBuku << endl;
+    }
+    peminjam[nomor].index = 0;
+    outfile << peminjam[nomor].index; 
+    outfile.close();
+
+}
+
