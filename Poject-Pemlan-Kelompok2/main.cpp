@@ -18,12 +18,12 @@ struct Peminjam
 };
 
 #include "searching.cpp"
-#include "sorting.cpp"
 #include "string.cpp"
 #include "filestream.cpp"
+#include "sorting.cpp"
 
 int main(){
-    int pilihan;
+    int pilihan, sort;
     const int MAX_BUKU = 10;
     const int MAX_PEMINJAM = 100;
 
@@ -45,7 +45,15 @@ int main(){
     switch(pilihan){
         case 1: 
             system("CLS");
-            displayBuku(buku, MAX_BUKU);
+            cout<<"Diurutkan berdasar\n";
+            cout<<"1. Judul Buku\n";
+            cout<<"2. Penulis\n";
+            cout<<"3. Tahun Terbit\n";
+            cout<<"Pilihan anda: ";
+            cin>>sort;
+            quickSort(buku, 0, MAX_BUKU-1, sort);
+            system("CLS");
+            displayBuku(buku, 10);
             system("pause");
             break;
         case 2:
