@@ -17,9 +17,8 @@ void readPeminjam(Peminjam peminjam[], int size){
 }
 
 void displayBuku(Buku buku[], int size){
-    readBuku(buku, size);
     for (int i = 0; i < size; ++i){
-        cout << i+1 << " " << buku[i].judulBuku << " " << buku[i].penulis << " " << buku[i].tahunTerbit << endl;
+        cout << i+1 << " -- " << buku[i].judulBuku << " -- " << buku[i].penulis << " -- " << buku[i].tahunTerbit << endl;
     }
     cout << endl;
 }
@@ -33,7 +32,7 @@ void displayPeminjam(Peminjam peminjam[]){
         }
     }
     for (int i = 0; i < size; ++i){
-        cout << i+1 << " " << peminjam[i].namaPeminjam << " " << peminjam[i].judulBuku << endl;
+        cout << i+1 << " -- " << peminjam[i].namaPeminjam << " -- " << peminjam[i].judulBuku << endl;
     }
     cout << endl;
 }
