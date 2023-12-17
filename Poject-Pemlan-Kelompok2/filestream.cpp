@@ -17,109 +17,39 @@ struct Peminjaman
 {
     string namaPeminjam;
     string judulBuku;
+    int id;
+    string tanggalPinjam;
+    string tanggalKembali;
 };
 
-// Fungsi untuk menyimpan informasi buku ke dalam file
-void simpanInfoBuku(const Buku &buku, const string &namaFile)
+// Struktur basis data peminjaman buku
+struct DatabasePeminjaman
 {
-    ofstream fileOutput(namaFile, ios::app); // ios::app untuk menambahkan ke akhir file
-    if (fileOutput.is_open())
+    Peminjaman dataPeminjaman[100]; // Asumsi maksimal 100 peminjaman
+    int jumlahPeminjaman;
+};
+
+// Fungsi untuk menyimpan informasi peminjaman ke dalam basis data
+void tambahPeminjaman(DatabasePeminjaman &database, const Peminjaman &peminjaman)
+{
+    if (database.jumlahPeminjaman < 100)
     {
-        fileOutput << buku.judulBuku << "," << buku.penulis << "," << buku.tahunTerbit << endl;
-        fileOutput.close();
-        cout << "Informasi buku berhasil disimpan." << endl;
+        database.dataPeminjaman[database.jumlahPeminjaman] = peminjaman;
+        database.jumlahPeminjaman++;
+        cout << "Informasi peminjaman berhasil ditambahkan." << endl;
     }
     else
     {
-        cerr << "Gagal membuka file untuk menyimpan informasi buku." << endl;
+        cerr << "Basis data penuh, tidak dapat menambahkan peminjaman baru." << endl;
     }
 }
 
-// Fungsi untuk menyimpan informasi peminjaman ke dalam file
-void simpanInfoPeminjaman(const Peminjaman &peminjaman, const string &namaFile)
+// Fungsi untuk menampilkan semua informasi peminjaman dari basis data
+void tampilkanSemuaPeminjaman(const DatabasePeminjaman &database)
 {
-    ofstream fileOutput(namaFile, ios::app);
-    if (fileOutput.is_open())
+    cout << "Daftar Peminjaman:" << endl;
+    for (int i = 0; i < database.jumlahPeminjaman; i++)
     {
-        fileOutput << peminjaman.namaPeminjam << "," << peminjaman.judulBuku << endl;
-        fileOutput.close();
-        cout << "Informasi peminjaman berhasil disimpan." << endl;
-    }
-    else
-    {
-        cerr << "Gagal membuka file untuk menyimpan informasi peminjaman." << endl;
-    }
-}
-
-// Fungsi untuk membaca dan menampilkan informasi dari file
-void bacaDanTampilkanInfo(const string &namaFile)
-{
-    ifstream fileInput(namaFile);
-    if (fileInput.is_open())
-    {
-        string line;
-        cout << "Isi File " << namaFile << ":" << endl;
-        while (getline(fileInput, line))
-        {
-            cout << line << endl;
-        }
-        fileInput.close();
-    }
-    else
-    {
-        cerr << "Gagal membuka file untuk membaca informasi." << endl;
-    }
-}
-
-// Fungsi untuk menghitung jumlah buku
-int hitungJumlahBuku(const string &namaFile)
-{
-    ifstream fileInput(namaFile);
-    if (fileInput.is_open())
-    {
-        string line;
-        int jumlahBuku = 0;
-        while (getline(fileInput, line))
-        {
-            jumlahBuku++;
-        }
-        fileInput.close();
-        return jumlahBuku;
-    }
-    else
-    {
-        cerr << "Gagal membuka file untuk menghitung jumlah buku." << endl;
-        return -1; // Mengembalikan nilai negatif jika terjadi kesalahan
-    }
-}
-
-int main()
-{
-    // Contoh penggunaan
-    Buku buku1 = {"Harry Potter", "J.K. Rowling", 1997};
-    Peminjaman peminjaman1 = {"John Doe", "Harry Potter"};
-
-    string namaFileBuku = "informasi_buku.txt";
-    string namaFilePeminjaman = "informasi_peminjaman.txt";
-
-    // Simpan informasi buku dan peminjaman ke dalam file
-    simpanInfoBuku(buku1, namaFileBuku);
-    simpanInfoPeminjaman(peminjaman1, namaFilePeminjaman);
-
-    // Baca dan tampilkan informasi dari file
-    bacaDanTampilkanInfo(namaFileBuku);
-    bacaDanTampilkanInfo(namaFilePeminjaman);
-
-    // Hitung dan tampilkan jumlah buku
-    int jumlahBuku = hitungJumlahBuku(namaFileBuku);
-    if (jumlahBuku >= 0)
-    {
-        cout << "Jumlah buku: " << jumlahBuku << endl;
-    }
-    else
-    {
-        cerr << "Gagal menghitung jumlah buku." << endl;
-    }
-
-    return 0;
-}
+        cout << "ID: " << database.dataPeminjaman[i].id
+             << ", Peminjam: " << database.dataPeminjaman[i].namaPeminjam
+             << ", Jud
