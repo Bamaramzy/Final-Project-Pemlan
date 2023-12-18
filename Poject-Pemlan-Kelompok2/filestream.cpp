@@ -3,6 +3,8 @@ void readBuku(Buku buku[], int size){
     infile.open("dbBuku.txt");
     for (int i = 0; i < size ; i++){
         infile >> buku[i].judulBuku >> buku[i].penulis >> buku[i].tahunTerbit >> buku[i].jumlah;
+        buku[i].judulBuku = replace2Space(buku[i].judulBuku);
+        buku[i].penulis = replace2Space(buku[i].penulis);
     }
     infile.close();
 }
@@ -12,6 +14,8 @@ void readPeminjam(Peminjam peminjam[], int size){
     infile.open("dbPeminjam.txt");
     for (int i = 0; i < size ; i++){
         infile >> peminjam[i].index >> peminjam[i].namaPeminjam >> peminjam[i].judulBuku;
+        peminjam[i].judulBuku = replace2Space(peminjam[i].judulBuku);
+        peminjam[i].namaPeminjam = replace2Space(peminjam[i].namaPeminjam);
     }
     infile.close();
 }
@@ -50,6 +54,8 @@ void writeBuku(Buku buku[], int size, int pilihan, bool kembali){
     ofstream outfile;
     outfile.open("dbBuku.txt");
     for (int i = 0; i != size; i++){
+        buku[i].judulBuku = replace2Underscore(buku[i].judulBuku);
+        buku[i].penulis = replace2Underscore(buku[i].penulis);
         outfile << buku[i].judulBuku << " " << buku[i].penulis << " " << buku[i].tahunTerbit <<" "<<buku[i].jumlah << endl;
     }
 }
@@ -65,8 +71,10 @@ void writePeminjam(Peminjam peminjam[], Buku buku[]){
         size++;
     }
 
-    cout<<"Masukkan nama memakai underscore: ";
-    cin>>nama;
+    cout<<"Masukkan nama: ";
+    cin.ignore();
+    getline(cin, nama);
+    
     if (panjangnama(nama)){
         peminjam[size].namaPeminjam = nama;
     }
@@ -87,10 +95,11 @@ void writePeminjam(Peminjam peminjam[], Buku buku[]){
     peminjam[size].index = size+1;
     peminjam[size].judulBuku = buku[nomorbuku].judulBuku;
 
+
     ofstream outfile;
     outfile.open("dbPeminjam.txt");
     for (int i = 0; i != size + 1; i++){
-        outfile << i+1 <<" "<< peminjam[i].namaPeminjam<<" "<< peminjam[i].judulBuku << endl;
+        outfile << i+1 <<" "<< replace2Underscore(peminjam[i].namaPeminjam) <<" "<< replace2Underscore(peminjam[i].judulBuku) << endl;
     }
     outfile.close();
 
@@ -119,6 +128,8 @@ void kembali(Buku buku[], Peminjam peminjam[]){
     ofstream outfile;
     outfile.open("dbPeminjam.txt");
     for (int i = 0; i != size - 1; i++){
+        peminjam[i].judulBuku = replace2Underscore(peminjam[i].judulBuku);
+        peminjam[i].namaPeminjam = replace2Underscore(peminjam[i].namaPeminjam);
         outfile << i+1 <<" "<< peminjam[i].namaPeminjam<<" "<< peminjam[i].judulBuku << endl;
     }
     peminjam[nomor].index = 0;
